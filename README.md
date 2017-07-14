@@ -1,4 +1,4 @@
-# iot-sensor-mq-9
+# iot-sensor-ap-mq-9
 
 ## implemented
  measure cycle 60 sec heating then 90 sec cooling

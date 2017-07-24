@@ -14,7 +14,7 @@
 // replace with your channel’s thingspeak API key,
 // tutorial https://learn.sparkfun.com/tutorials/esp8266-thing-hookup-guide/example-sketch-ap-web-server
 
-const char WiFiApName[] = "sensor-co";
+const char WiFiApName[] = "sensor-co-";
 const char WiFiApSecret[] = "Sensor123";
 const float SEC = 1e3;
 WiFiServer server(8090);
@@ -25,10 +25,38 @@ Adafruit_BME280 bme; // I2C
  **************************/
 
  void setupWiFi() {
-   WiFi.mode(WIFI_AP);
-   WiFi.softAP(WiFiApName, WiFiApSecret);
-   Serial.println("Finished with wifi setup");
- }
+  byte mac[6];
+  WiFi.macAddress(mac);
+
+  Serial.print(F("MAC: "));
+  Serial.print(mac[5],HEX);
+  Serial.print(F(":"));
+  Serial.print(mac[4],HEX);
+  Serial.print(F(":"));
+  Serial.print(mac[3],HEX);
+  Serial.print(F(":"));
+  Serial.print(mac[2],HEX);
+  Serial.print(F(":"));
+  Serial.print(mac[1],HEX);
+  Serial.print(F(":"));
+  Serial.println(mac[0],HEX);
+
+  String apName = WiFiApName;
+  apName += String(mac[5], HEX);
+  apName += String(mac[4], HEX);
+
+  Serial.print(F("ApName: "));
+  Serial.println(apName);
+
+  WiFi.mode(WIFI_AP);
+
+  char ApName[15];
+  apName.toCharArray(ApName, 15);
+
+  WiFi.softAP(ApName, WiFiApSecret);
+  Serial.println(F("Finished with wifi setup"));
+}
+
 
  // void initBme() {
  //   Wire.begin(5,4);
@@ -224,8 +252,8 @@ void send(float coPpm) {
   String s = "HTTP/1.1 200 OK\r\n";
   s += "Content-Type: application/json\r\n\r\n";
   s += "{";
-  s += "\"coPpm\":";
-  s += String(coPpm);
+  s += "\"analog\":";
+  s += String(analog);
   // s += ",";
   //
   // s += "\"temp\":";
